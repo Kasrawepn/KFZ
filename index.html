@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autoflink.de – Mobile Kfz-Werkstatt</title>
+
+<style>
+  :root {
+    --black: #0a0a0a;
+    --orange: #FF6B00;
+    --orange-dark: #cc5500;
+    --orange-glow: rgba(255,107,0,0.18);
+    --white: #f5f3ef;
+    --grey: #141414;
+    --grey2: #1e1e1e;
+    --grey-light: #888;
+    --accent: #FFD700;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 48px;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid #1e1e1e;
+  }
+  .logo { font-family: 'Impact', 'Arial Black', sans-serif; font-size: 2rem; letter-spacing: 2px; color: var(--white); text-decoration: none; }
+  .logo span { color: var(--orange); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { color: var(--grey-light); text-decoration: none; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.5px; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta { background: var(--orange) !important; color: var(--white) !important; padding: 10px 22px; border-radius: 4px; font-weight: 600 !important; transition: background 0.2s !important; }
+  .nav-cta:hover { background: var(--orange-dark) !important; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 120px 48px 60px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(255,107,0,0.13) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,107,0,0.12);
+    border: 1px solid rgba(255,107,0,0.3);
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-badge::before {
+    content: ''; width: 6px; height: 6px;
+    background: var(--orange); border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+
+  .hero h1 { font-family: 'Impact', 'Arial Black', sans-serif; font-size: clamp(3.5rem,7vw,6.5rem); line-height: 0.95; letter-spacing: 1px; margin-bottom: 24px; animation: fadeUp 0.6s 0.1s ease both; }
+  .hero h1 em { font-style: normal; color: var(--orange); display: block; }
+  .hero p { font-size: 1.1rem; color: var(--grey-light); max-width: 420px; line-height: 1.7; margin-bottom: 36px; animation: fadeUp 0.6s 0.2s ease both; }
+
+  .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; animation: fadeUp 0.6s 0.3s ease both; }
+
+  /* ── BUTTONS ── */
+  .btn-primary { background: var(--orange); color: var(--white); padding: 14px 28px; border-radius: 6px; font-weight: 600; font-size: 0.95rem; text-decoration: none; transition: background 0.2s, transform 0.15s; display: inline-flex; align-items: center; gap: 10px; }
+  .btn-primary:hover { background: var(--orange-dark); transform: translateY(-2px); }
+  .btn-whatsapp { background: #25D366; color: #fff; padding: 14px 28px; border-radius: 6px; font-weight: 600; font-size: 0.95rem; text-decoration: none; transition: background 0.2s, transform 0.15s; display: inline-flex; align-items: center; gap: 10px; }
+  .btn-whatsapp:hover { background: #1ebe5d; transform: translateY(-2px); }
+  .btn-outline { border: 1px solid #333; color: var(--white); padding: 14px 28px; border-radius: 6px; font-weight: 500; font-size: 0.95rem; text-decoration: none; transition: border-color 0.2s, transform 0.15s; display: inline-flex; align-items: center; gap: 10px; }
+  .btn-outline:hover { border-color: var(--orange); color: var(--orange); transform: translateY(-2px); }
+
+  /* ── HERO CARD ── */
+  .hero-right { display: flex; justify-content: center; align-items: center; animation: fadeIn 0.8s 0.3s ease both; }
+  .hero-card { background: var(--grey); border: 1px solid #2a2a2a; border-radius: 16px; padding: 32px; width: 320px; position: relative; }
+  .hero-card::before { content: ''; position: absolute; inset: -1px; border-radius: 16px; background: linear-gradient(135deg, rgba(255,107,0,0.25), transparent 60%); z-index: -1; }
+  .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .card-icon { width: 44px; height: 44px; background: var(--orange); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+  .card-title { font-weight: 600; font-size: 0.95rem; }
+  .card-sub { font-size: 0.75rem; color: var(--grey-light); }
+  .card-stat { background: var(--grey2); border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .stat-label { font-size: 0.8rem; color: var(--grey-light); }
+  .stat-value { font-family: 'Courier New', monospace; font-size: 0.95rem; font-weight: 500; color: var(--accent); }
+
+  /* ── WHATSAPP SCROLL BUTTON ── */
+  .wa-scroll-btn {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    z-index: 999;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    animation: bounceIn 0.6s 1s ease both;
+  }
+  .wa-scroll-btn a {
+    display: flex; align-items: center; justify-content: center;
+    width: 62px; height: 62px;
+    background: #25D366;
+    border-radius: 50%;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.45);
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+  .wa-scroll-btn a:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.6); }
+  .wa-scroll-btn svg { width: 34px; height: 34px; fill: #fff; }
+  .wa-pulse {
+    position: absolute; top: -3px; right: -3px;
+    width: 14px; height: 14px;
+    background: var(--orange); border-radius: 50%;
+    border: 2px solid var(--black);
+    animation: pulse 1.5s infinite;
+  }
+  .wa-label {
+    background: rgba(0,0,0,0.75);
+    color: #fff;
+    font-size: 0.7rem; font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  /* ── TRUST BAR ── */
+  .trust-bar { border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; padding: 20px 48px; display: flex; align-items: center; gap: 48px; overflow: hidden; background: var(--grey); }
+  .trust-item { display: flex; align-items: center; gap: 10px; white-space: nowrap; font-size: 0.85rem; color: var(--grey-light); font-weight: 500; }
+
+  /* ── SECTION COMMON ── */
+  section { padding: 100px 48px; }
+  .section-tag { font-family: 'Courier New', monospace; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
+  h2 { font-family: 'Impact', 'Arial Black', sans-serif; font-size: clamp(2.5rem,5vw,4rem); letter-spacing: 1px; line-height: 1; margin-bottom: 16px; }
+  .section-sub { color: var(--grey-light); font-size: 1rem; max-width: 500px; margin-bottom: 60px; }
+
+  /* ── SERVICES ── */
+  #services { background: var(--black); }
+  .services-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; background: #1a1a1a; border: 1px solid #1a1a1a; border-radius: 12px; overflow: hidden; }
+  .service-card { background: var(--grey); padding: 36px 28px; transition: background 0.25s; cursor: default; }
+  .service-card:hover { background: #1a1a1a; }
+  .service-card:hover .service-icon { background: var(--orange); transform: scale(1.1); }
+  .service-icon { width: 52px; height: 52px; background: rgba(255,107,0,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 20px; transition: background 0.25s, transform 0.25s; }
+  .service-name { font-weight: 600; font-size: 1rem; margin-bottom: 8px; }
+  .service-desc { font-size: 0.825rem; color: var(--grey-light); line-height: 1.6; }
+  .service-price { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--accent); margin-top: 14px; font-weight: 500; }
+
+  /* ── HOW IT WORKS ── */
+  #how { background: var(--grey); }
+  .steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; position: relative; }
+  .steps::before { content: ''; position: absolute; top: 32px; left: 10%; right: 10%; height: 1px; background: linear-gradient(90deg, transparent, var(--orange), var(--orange), transparent); }
+  .step { padding: 0 20px; text-align: center; }
+  .step-num { width: 64px; height: 64px; background: var(--black); border: 2px solid var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Impact', 'Arial Black', sans-serif; font-size: 1.5rem; color: var(--orange); margin: 0 auto 24px; position: relative; z-index: 1; }
+  .step h3 { font-weight: 600; font-size: 1rem; margin-bottom: 10px; }
+  .step p { font-size: 0.825rem; color: var(--grey-light); line-height: 1.6; }
+
+  /* ── STATS ── */
+  .stats-bar { background: var(--orange); padding: 60px 48px; display: grid; grid-template-columns: repeat(4,1fr); }
+  .stat-item { text-align: center; border-right: 1px solid rgba(255,255,255,0.2); padding: 0 20px; }
+  .stat-item:last-child { border-right: none; }
+  .stat-num { font-family: 'Impact', 'Arial Black', sans-serif; font-size: 3.5rem; letter-spacing: 1px; line-height: 1; }
+  .stat-unit { font-size: 1.5rem; }
+  .stat-desc { font-size: 0.825rem; opacity: 0.85; margin-top: 6px; }
+
+  /* ── RETELL AI SECTION ── */
+  #retell { background: var(--black); }
+  .retell-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+  .retell-info h2 { margin-bottom: 16px; }
+  .retell-info p { color: var(--grey-light); margin-bottom: 28px; line-height: 1.7; }
+  .retell-features { list-style: none; margin-bottom: 36px; }
+  .retell-features li { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--grey-light); margin-bottom: 12px; }
+  .retell-features li::before { content: '✓'; color: var(--orange); font-weight: 700; font-size: 1rem; }
+
+  .retell-widget {
+    background: var(--grey);
+    border: 1px solid #2a2a2a;
+    border-radius: 20px;
+    padding: 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .retell-widget::before { content: ''; position: absolute; inset: -1px; border-radius: 20px; background: linear-gradient(135deg, rgba(255,107,0,0.2), transparent 60%); z-index: 0; pointer-events: none; }
+  .retell-widget > * { position: relative; z-index: 1; }
+
+  .ai-icon { font-size: 3.5rem; margin-bottom: 16px; display: block; animation: floatIcon 3s ease-in-out infinite; }
+  @keyframes floatIcon { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+  .retell-widget h3 { font-family: 'Impact', 'Arial Black', sans-serif; font-size: 2rem; letter-spacing: 1px; margin-bottom: 8px; }
+  .retell-widget p { font-size: 0.875rem; color: var(--grey-light); margin-bottom: 28px; line-height: 1.6; }
+
+  .retell-btns { display: flex; flex-direction: column; gap: 14px; }
+
+  .btn-retell-wa {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    background: #25D366;
+    color: #fff;
+    padding: 16px 24px;
+    border-radius: 10px;
+    font-weight: 700; font-size: 1rem;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-retell-wa:hover { background: #1ebe5d; transform: translateY(-2px); }
+
+  .btn-retell-call {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    background: var(--orange);
+    color: #fff;
+    padding: 16px 24px;
+    border-radius: 10px;
+    font-weight: 700; font-size: 1rem;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-retell-call:hover { background: var(--orange-dark); transform: translateY(-2px); }
+
+  .retell-note { font-size: 0.75rem; color: var(--grey-light); margin-top: 16px; }
+
+
+
+  /* ── CONTACT ── */
+  #contact { background: var(--grey); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+  .contact-info p { color: var(--grey-light); margin-bottom: 36px; }
+  .contact-detail { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 24px; }
+  .detail-icon { width: 40px; height: 40px; min-width: 40px; background: rgba(255,107,0,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+  .detail-label { font-size: 0.75rem; color: var(--grey-light); margin-bottom: 2px; }
+  .detail-value { font-weight: 500; font-size: 0.9rem; }
+  .contact-form { background: var(--black); border: 1px solid #222; border-radius: 16px; padding: 36px; }
+  .form-title { font-weight: 600; font-size: 1.1rem; margin-bottom: 24px; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 0.75rem; color: var(--grey-light); margin-bottom: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; background: var(--grey2); border: 1px solid #2a2a2a; border-radius: 6px; padding: 12px 14px; color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; transition: border-color 0.2s; outline: none; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--orange); }
+  .form-group select option { background: #1a1a1a; }
+  .form-group textarea { height: 90px; resize: none; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-submit { width: 100%; background: var(--orange); color: #fff; border: none; padding: 14px; border-radius: 6px; font-weight: 600; font-size: 1rem; cursor: pointer; margin-top: 8px; font-family: 'DM Sans', sans-serif; transition: background 0.2s, transform 0.15s; }
+  .form-submit:hover { background: var(--orange-dark); transform: translateY(-1px); }
+  #formSuccess { display: none; text-align: center; padding: 20px; }
+  #formSuccess .ck { font-size: 3rem; margin-bottom: 12px; }
+  #formSuccess h4 { font-weight: 600; margin-bottom: 8px; }
+  #formSuccess p { font-size: 0.875rem; color: var(--grey-light); }
+
+  /* ── FOOTER ── */
+  footer { background: #050505; border-top: 1px solid #111; padding: 48px; }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
+  .footer-logo { font-family: 'Impact', 'Arial Black', sans-serif; font-size: 1.8rem; letter-spacing: 2px; color: var(--white); }
+  .footer-logo span { color: var(--orange); }
+  .footer-copy { font-size: 0.8rem; color: #444; }
+  .footer-links { display: flex; gap: 28px; list-style: none; }
+  .footer-links a { color: #444; text-decoration: none; font-size: 0.8rem; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--white); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes bounceIn { 0%{opacity:0;transform:scale(0.5) translateY(40px)} 70%{transform:scale(1.1) translateY(-4px)} 100%{opacity:1;transform:scale(1) translateY(0)} }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:900px){
+    nav{padding:14px 20px}
+    .nav-links{display:none}
+    .hero{grid-template-columns:1fr;padding:100px 20px 60px;gap:40px}
+    .hero-right{display:none}
+    section{padding:70px 20px}
+    .services-grid{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr 1fr;gap:40px}
+    .steps::before{display:none}
+    .stats-bar{grid-template-columns:1fr 1fr;gap:32px;padding:48px 20px}
+    .stat-item{border-right:none;border-bottom:1px solid rgba(255,255,255,.15);padding-bottom:24px}
+    .retell-inner{grid-template-columns:1fr}
+    .contact-grid{grid-template-columns:1fr}
+    .trust-bar{gap:24px;overflow-x:auto;padding:18px 20px}
+    .footer-inner{flex-direction:column;text-align:center}
+    .wa-scroll-btn{bottom:20px;right:16px}
+  }
+</style>
+  <!-- Retell AI Voice Widget -->
+  <script
+    id="retell-widget"
+    src="https://dashboard.retellai.com/retell-widget-v2.js"
+    type="module"
+    data-public-key="public_key_3b3f41ce35c770724f0fd"
+    data-voice-public-key="public_key_3b3f41ce35c770724f0fd"
+    data-voice-agent-id="agent_4187aa1e071aee0e6618649015"
+    data-title="AutoFix24 Sprachassistent"
+    data-fab-text="🎙️ Jetzt sprechen"
+    data-bot-name="AutoFix24 KI"
+    data-popup-message="Hallo! Wie kann ich Ihnen helfen? 🔧"
+    data-show-ai-popup="true"
+    data-show-ai-popup-time="4"
+    data-color="#FF6B00"
+    data-auto-open="false"
+  ></script>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <a class="logo" href="#">AUTO<span>FLINK</span>.DE</a>
+  <ul class="nav-links">
+    <li><a href="#services">Leistungen</a></li>
+    <li><a href="#how">Ablauf</a></li>
+    <li><a href="#retell">KI-Assistent</a></li>
+    <li><a href="#contact">Kontakt</a></li>
+    <li><a href="https://wa.me/4915212497588?text=Hallo%20Autoflink!%20Ich%20m%C3%B6chte%20einen%20Termin%20buchen." target="_blank" class="nav-cta">💬 WhatsApp</a></li>
+  </ul>
+</nav>
+
+<!-- ═══ WHATSAPP SCROLL BUTTON ═══ -->
+<div class="wa-scroll-btn">
+  <a href="https://wa.me/4915212497588?text=Hallo%20Autoflink!%20Ich%20m%C3%B6chte%20einen%20Termin%20buchen.%20K%C3%B6nnen%20Sie%20mir%20helfen%3F" target="_blank" rel="noopener" title="WhatsApp Chat öffnen">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16.003 2.667C8.639 2.667 2.667 8.639 2.667 16c0 2.355.635 4.661 1.84 6.683L2.667 29.333l6.821-1.787A13.29 13.29 0 0016.003 29.333C23.364 29.333 29.333 23.364 29.333 16S23.364 2.667 16.003 2.667zm0 24c-2.096 0-4.147-.564-5.939-1.633l-.425-.253-4.045 1.059 1.08-3.939-.277-.453A10.617 10.617 0 015.333 16c0-5.88 4.787-10.667 10.667-10.667S26.667 10.12 26.667 16 21.88 26.667 16 26.667zm5.867-7.947c-.32-.16-1.893-.933-2.187-1.04-.293-.107-.507-.16-.72.16-.213.32-.827 1.04-.96 1.253-.133.213-.267.24-.587.08-.32-.16-1.36-.501-2.588-1.597-.96-.853-1.609-1.904-1.797-2.224-.187-.32-.02-.493.141-.653.145-.145.32-.373.48-.56.16-.187.213-.32.32-.533.107-.213.053-.4-.027-.56-.08-.16-.72-1.733-.987-2.373-.26-.627-.525-.541-.72-.552l-.613-.013a1.173 1.173 0 00-.853.4c-.293.32-1.12 1.093-1.12 2.667s1.147 3.093 1.307 3.307c.16.213 2.253 3.44 5.46 4.827.763.328 1.36.523 1.824.672.767.243 1.464.208 2.016.125.615-.093 1.893-.773 2.16-1.52.267-.747.267-1.387.187-1.52-.08-.133-.293-.213-.613-.373z"/>
+    </svg>
+    <div class="wa-pulse"></div>
+  </a>
+  <div class="wa-label">WhatsApp Chat</div>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🔧 Mobile Kfz-Werkstatt · Deutschland</div>
+    <h1>Die Werkstatt <em>kommt zu Ihnen.</em></h1>
+    <p>AutoFix24 schickt zertifizierte Kfz-Meister direkt zu Ihrem Standort — zu Hause, auf der Arbeit oder unterwegs. Kein Abschleppen. Keine Wartezeit.</p>
+    <div class="hero-btns">
+      <a href="https://wa.me/4915212497588?text=Hallo%20AutoFix24!%20Ich%20m%C3%B6chte%20einen%20Termin%20buchen." target="_blank" class="btn-whatsapp">
+        <svg width="20" height="20" viewBox="0 0 32 32" fill="white"><path d="M16.003 2.667C8.639 2.667 2.667 8.639 2.667 16c0 2.355.635 4.661 1.84 6.683L2.667 29.333l6.821-1.787A13.29 13.29 0 0016.003 29.333C23.364 29.333 29.333 23.364 29.333 16S23.364 2.667 16.003 2.667zm0 24c-2.096 0-4.147-.564-5.939-1.633l-.425-.253-4.045 1.059 1.08-3.939-.277-.453A10.617 10.617 0 015.333 16c0-5.88 4.787-10.667 10.667-10.667S26.667 10.12 26.667 16 21.88 26.667 16 26.667zm5.867-7.947c-.32-.16-1.893-.933-2.187-1.04-.293-.107-.507-.16-.72.16-.213.32-.827 1.04-.96 1.253-.133.213-.267.24-.587.08-.32-.16-1.36-.501-2.588-1.597-.96-.853-1.609-1.904-1.797-2.224-.187-.32-.02-.493.141-.653.145-.145.32-.373.48-.56.16-.187.213-.32.32-.533.107-.213.053-.4-.027-.56-.08-.16-.72-1.733-.987-2.373-.26-.627-.525-.541-.72-.552l-.613-.013a1.173 1.173 0 00-.853.4c-.293.32-1.12 1.093-1.12 2.667s1.147 3.093 1.307 3.307c.16.213 2.253 3.44 5.46 4.827.763.328 1.36.523 1.824.672.767.243 1.464.208 2.016.125.615-.093 1.893-.773 2.16-1.52.267-.747.267-1.387.187-1.52-.08-.133-.293-.213-.613-.373z"/></svg>
+        Jetzt per WhatsApp buchen
+      </a>
+      <a href="#services" class="btn-outline">📋 Leistungen ansehen</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-card">
+      <div class="card-header">
+        <div class="card-icon">🔩</div>
+        <div>
+          <div class="card-title">Anfrage in Bearbeitung</div>
+          <div class="card-sub">Meister unterwegs · ETA 22 Min.</div>
+        </div>
+      </div>
+      <div class="card-stat"><span class="stat-label">Standort erkannt</span><span class="stat-value">München, BY</span></div>
+      <div class="card-stat"><span class="stat-label">Serviceart</span><span class="stat-value">Ölwechsel</span></div>
+      <div class="card-stat"><span class="stat-label">Preis</span><span class="stat-value">ab 79 €</span></div>
+      <div class="card-stat"><span class="stat-label">Meisterbewertung</span><span class="stat-value">★ 4.97</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TRUST BAR ═══ -->
+<div class="trust-bar">
+  <div class="trust-item">✅ <span>Kfz-Meisterbetrieb</span></div>
+  <div class="trust-item">🛡️ <span>Vollkasko versichert</span></div>
+  <div class="trust-item">📍 <span>Deutschlandweit verfügbar</span></div>
+  <div class="trust-item">⏱️ <span>Ankunft 30–60 Min.</span></div>
+  <div class="trust-item">💳 <span>Festpreise & transparent</span></div>
+  <div class="trust-item">⭐ <span>4.9 Kundenbewertung</span></div>
+</div>
+
+<!-- ═══ SERVICES ═══ -->
+<section id="services">
+  <div class="section-tag">// Unsere Leistungen</div>
+  <h2>Was wir für Sie <span style="color:var(--orange)">reparieren</span></h2>
+  <p class="section-sub">Von kleinen Wartungen bis zu komplexen Reparaturen — unsere Meister bringen alles mit.</p>
+  <div class="services-grid">
+    <div class="service-card"><div class="service-icon">🛢️</div><div class="service-name">Ölwechsel & Inspektion</div><div class="service-desc">Motoröl, Filter und Sichtprüfung aller Systeme. Schnell erledigt — direkt bei Ihnen.</div><div class="service-price">ab 79 € inkl. Öl & Anfahrt</div></div>
+    <div class="service-card"><div class="service-icon">🛞</div><div class="service-name">Reifenwechsel & Auswuchten</div><div class="service-desc">Sommer-/Winterreifen wechseln, auswuchten und Luftdruck kontrollieren.</div><div class="service-price">ab 49 € pro Achse</div></div>
+    <div class="service-card"><div class="service-icon">🔋</div><div class="service-name">Batterie & Elektrik</div><div class="service-desc">Batterie tauschen, Lichtmaschine prüfen, Fehlercode auslesen und löschen.</div><div class="service-price">ab 59 € inkl. Diagnose</div></div>
+    <div class="service-card"><div class="service-icon">🔴</div><div class="service-name">Bremsen & Scheiben</div><div class="service-desc">Bremsbeläge und Bremsscheiben wechseln. Sicherheitscheck inklusive.</div><div class="service-price">ab 149 € pro Achse</div></div>
+    <div class="service-card"><div class="service-icon">🔧</div><div class="service-name">HU/TÜV Vorbereitung</div><div class="service-desc">Wir bereiten Ihr Fahrzeug optimal auf die Hauptuntersuchung vor.</div><div class="service-price">ab 89 € Komplett-Check</div></div>
+    <div class="service-card"><div class="service-icon">🌡️</div><div class="service-name">Kühlsystem & Klimaanlage</div><div class="service-desc">Kühlwasser wechseln, Klimaanlage befüllen und desinfizieren.</div><div class="service-price">ab 69 €</div></div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section id="how">
+  <div class="section-tag">// So funktioniert's</div>
+  <h2>In 4 Schritten <span style="color:var(--orange)">fertig.</span></h2>
+  <p class="section-sub">So einfach war Autowerkstatt noch nie. Kein Stress, keine Wartezeit.</p>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><h3>Problem melden</h3><p>Schildern Sie kurz das Problem — per WhatsApp, Formular oder direkt per Anruf beim KI-Assistenten.</p></div>
+    <div class="step"><div class="step-num">2</div><h3>Angebot erhalten</h3><p>In 15 Minuten bekommen Sie ein transparentes Festpreisangebot — ohne versteckte Kosten.</p></div>
+    <div class="step"><div class="step-num">3</div><h3>Meister kommt zu Ihnen</h3><p>Ein zertifizierter Kfz-Meister fährt direkt zu Ihnen — mit vollem Werkzeug und Ersatzteilen.</p></div>
+    <div class="step"><div class="step-num">4</div><h3>Fertig & bezahlen</h3><p>Reparatur erledigt. Bezahlen Sie per Karte, PayPal oder Überweisung. Rechnung sofort per Mail.</p></div>
+  </div>
+</section>
+
+<!-- ═══ STATS ═══ -->
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-num">2.400<span class="stat-unit">+</span></div><div class="stat-desc">Reparaturen abgeschlossen</div></div>
+  <div class="stat-item"><div class="stat-num">4.9<span class="stat-unit">★</span></div><div class="stat-desc">Durchschnittliche Bewertung</div></div>
+  <div class="stat-item"><div class="stat-num">30<span class="stat-unit">min</span></div><div class="stat-desc">Ø Reaktionszeit</div></div>
+  <div class="stat-item"><div class="stat-num">100<span class="stat-unit">%</span></div><div class="stat-desc">Zufriedenheitsgarantie</div></div>
+</div>
+
+<!-- ═══ RETELL AI SECTION ═══ -->
+<section id="retell">
+  <div class="section-tag">// KI-Sprachassistent</div>
+  <div class="retell-inner">
+    <div class="retell-info">
+      <h2>Ihr persönlicher <span style="color:var(--orange)">KI-Assistent</span></h2>
+      <p>Unser intelligenter Sprachassistent — powered by Retell AI — ist rund um die Uhr für Sie da. Stellen Sie Fragen, buchen Sie Termine und erhalten Sie sofortige Hilfe per Sprache oder WhatsApp.</p>
+      <ul class="retell-features">
+        <li>24/7 verfügbar — auch nachts und am Wochenende</li>
+        <li>Natürliche Sprachkonversation auf Deutsch</li>
+        <li>Terminbuchung und Preisauskunft in Echtzeit</li>
+        <li>Direkt per Sprachanruf im Browser</li>
+        <li>Oder per WhatsApp-Nachricht starten</li>
+      </ul>
+      <a href="https://wa.me/4915212497588?text=Hallo%20Autoflink!%20Ich%20m%C3%B6chte%20mit%20dem%20KI-Assistenten%20sprechen." target="_blank" class="btn-whatsapp" style="display:inline-flex;">
+        <svg width="18" height="18" viewBox="0 0 32 32" fill="white"><path d="M16.003 2.667C8.639 2.667 2.667 8.639 2.667 16c0 2.355.635 4.661 1.84 6.683L2.667 29.333l6.821-1.787A13.29 13.29 0 0016.003 29.333C23.364 29.333 29.333 23.364 29.333 16S23.364 2.667 16.003 2.667zm0 24c-2.096 0-4.147-.564-5.939-1.633l-.425-.253-4.045 1.059 1.08-3.939-.277-.453A10.617 10.617 0 015.333 16c0-5.88 4.787-10.667 10.667-10.667S26.667 10.12 26.667 16 21.88 26.667 16 26.667zm5.867-7.947c-.32-.16-1.893-.933-2.187-1.04-.293-.107-.507-.16-.72.16-.213.32-.827 1.04-.96 1.253-.133.213-.267.24-.587.08-.32-.16-1.36-.501-2.588-1.597-.96-.853-1.609-1.904-1.797-2.224-.187-.32-.02-.493.141-.653.145-.145.32-.373.48-.56.16-.187.213-.32.32-.533.107-.213.053-.4-.027-.56-.08-.16-.72-1.733-.987-2.373-.26-.627-.525-.541-.72-.552l-.613-.013a1.173 1.173 0 00-.853.4c-.293.32-1.12 1.093-1.12 2.667s1.147 3.093 1.307 3.307c.16.213 2.253 3.44 5.46 4.827.763.328 1.36.523 1.824.672.767.243 1.464.208 2.016.125.615-.093 1.893-.773 2.16-1.52.267-.747.267-1.387.187-1.52-.08-.133-.293-.213-.613-.373z"/></svg>
+        KI per WhatsApp starten
+      </a>
+    </div>
+
+    <div class="retell-widget">
+      <span class="ai-icon">🤖</span>
+      <h3>KI-Sprachassistent</h3>
+      <p>Klicken Sie auf einen der Buttons um direkt mit unserem KI-Assistenten zu sprechen oder zu chatten.</p>
+      <div class="retell-btns">
+        <a href="https://wa.me/4915212497588?text=Hallo%20Autoflink!%20Ich%20m%C3%B6chte%20mit%20dem%20KI-Assistenten%20sprechen%20und%20einen%20Termin%20buchen." target="_blank" class="btn-retell-wa">
+          <svg width="20" height="20" viewBox="0 0 32 32" fill="white"><path d="M16.003 2.667C8.639 2.667 2.667 8.639 2.667 16c0 2.355.635 4.661 1.84 6.683L2.667 29.333l6.821-1.787A13.29 13.29 0 0016.003 29.333C23.364 29.333 29.333 23.364 29.333 16S23.364 2.667 16.003 2.667zm0 24c-2.096 0-4.147-.564-5.939-1.633l-.425-.253-4.045 1.059 1.08-3.939-.277-.453A10.617 10.617 0 015.333 16c0-5.88 4.787-10.667 10.667-10.667S26.667 10.12 26.667 16 21.88 26.667 16 26.667zm5.867-7.947c-.32-.16-1.893-.933-2.187-1.04-.293-.107-.507-.16-.72.16-.213.32-.827 1.04-.96 1.253-.133.213-.267.24-.587.08-.32-.16-1.36-.501-2.588-1.597-.96-.853-1.609-1.904-1.797-2.224-.187-.32-.02-.493.141-.653.145-.145.32-.373.48-.56.16-.187.213-.32.32-.533.107-.213.053-.4-.027-.56-.08-.16-.72-1.733-.987-2.373-.26-.627-.525-.541-.72-.552l-.613-.013a1.173 1.173 0 00-.853.4c-.293.32-1.12 1.093-1.12 2.667s1.147 3.093 1.307 3.307c.16.213 2.253 3.44 5.46 4.827.763.328 1.36.523 1.824.672.767.243 1.464.208 2.016.125.615-.093 1.893-.773 2.16-1.52.267-.747.267-1.387.187-1.52-.08-.133-.293-.213-.613-.373z"/></svg>
+          💬 Per WhatsApp chatten
+        </a>
+        <button class="btn-retell-call" onclick="document.querySelector('#retell-widget')?.click?.() || alert('Bitte den orangenen Button unten rechts verwenden 🎙️')">
+          🎙️ Sprachassistent starten ↘
+        </button>
+      </div>
+      <p class="retell-note">🔒 Gespräch ist verschlüsselt & anonym · Powered by Retell AI</p>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact">
+  <div class="section-tag">// Kontakt & Buchung</div>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <h2>Termin <span style="color:var(--orange)">buchen</span></h2>
+      <p>Schreiben Sie uns — wir antworten innerhalb von 15 Minuten mit einem Festpreisangebot.</p>
+      <div class="contact-detail"><div class="detail-icon">📞</div><div><div class="detail-label">Telefon & WhatsApp</div><div class="detail-value">+49 152 12497588</div></div></div>
+      <div class="contact-detail"><div class="detail-icon">✉️</div><div><div class="detail-label">E-Mail</div><div class="detail-value">info@autofix24.de</div></div></div>
+      <div class="contact-detail"><div class="detail-icon">🕐</div><div><div class="detail-label">Erreichbarkeit</div><div class="detail-value">Mo–So · 07:00 – 22:00 Uhr</div></div></div>
+      <div class="contact-detail"><div class="detail-icon">📍</div><div><div class="detail-label">Servicegebiet</div><div class="detail-value">Ganz Deutschland · Anfahrt kostenlos ab 50 km</div></div></div>
+    </div>
+    <div class="contact-form">
+      <div class="form-title">🔧 Anfrage senden</div>
+      <div id="formSuccess"><div class="ck">✅</div><h4>Anfrage erhalten!</h4><p>Wir melden uns innerhalb von 15 Minuten.</p></div>
+      <div id="formContent">
+        <div class="form-row">
+          <div class="form-group"><label>Vorname</label><input type="text" placeholder="Max"></div>
+          <div class="form-group"><label>Nachname</label><input type="text" placeholder="Mustermann"></div>
+        </div>
+        <div class="form-group"><label>Telefon / WhatsApp</label><input type="tel" placeholder="+49 ..."></div>
+        <div class="form-group"><label>Ihr Fahrzeug</label><input type="text" placeholder="z.B. VW Golf 2019"></div>
+        <div class="form-group"><label>Gewünschte Leistung</label>
+          <select>
+            <option value="">Bitte wählen ...</option>
+            <option>Ölwechsel & Inspektion</option>
+            <option>Reifenwechsel</option>
+            <option>Batterie / Elektrik</option>
+            <option>Bremsen & Scheiben</option>
+            <option>HU/TÜV Vorbereitung</option>
+            <option>Kühlsystem / Klimaanlage</option>
+            <option>Sonstiges</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Standort</label><input type="text" placeholder="Straße, PLZ, Stadt"></div>
+        <div class="form-group"><label>Beschreibung (optional)</label><textarea placeholder="Was ist das Problem?"></textarea></div>
+        <button class="form-submit" onclick="submitForm()">Jetzt kostenlos anfragen →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">AUTO<span>FLINK</span>.DE</div>
+    <p class="footer-copy">© 2024 Autoflink.de GmbH · Mobile Kfz-Werkstatt · Deutschland</p>
+    <ul class="footer-links">
+      <li><a href="#">Impressum</a></li>
+      <li><a href="#">Datenschutz</a></li>
+      <li><a href="#">AGB</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+  // ── Form ──
+  function submitForm() {
+    document.getElementById('formContent').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+  }
+
+  // ── Scroll reveal ──
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.service-card, .step, .contact-detail, .retell-widget').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
